@@ -4,6 +4,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'firebase_options.dart';
 
+// Initialize Firebase
 Future<void> initializeFirebase() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -14,61 +15,64 @@ void main() {
   runApp(MyApp());
 }
 
+// Define the root widget for the app
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        resizeToAvoidBottomInset: false,
-        appBar: AppBar(
+        resizeToAvoidBottomInset: false, // prevent resizing to avoid the bottom inset (keyboard)
+        appBar: AppBar( backgroundColor: Colors.red[700],
+
           title: Text("Text Reverser"),
         ),
-        body: SingleChildScrollView(child: ReverseText()),
+        body: SingleChildScrollView(child: ReverseText()), // use a single child scroll view for the body
       ),
     );
   }
 }
 
-// this allows the user to input text and reverse it
+// Define the widget for the text reverser
 class ReverseText extends StatefulWidget {
   @override
   _ReverseTextState createState() => _ReverseTextState();
 }
 
-// here are the strings that will be reversed
+// State class for the text reverser widget
 class _ReverseTextState extends State<ReverseText> {
-  String _text = "";
-  String _reversedText = "";
-  // this function will use split() to split the string into a list of characters, reversed() to reverse the list, and join() to join the list back into a string
+  String _text = ""; // store the input text
+  String _reversedText = ""; // store the reversed text
+
+  // function to reverse the input text
   void _reverseText() {
     setState(() {
-      _reversedText = _text.split('').reversed.join();
-      sendDataToFirestore(_text, _reversedText);
+      _reversedText = _text.split('').reversed.join(); // reverse the text by splitting it into characters, reversing the list, and joining it back
+      sendDataToFirestore(_text, _reversedText); // send the input text and reversed text to Firestore
     });
   }
 
-  @override // here it will build all the UI for the app
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         Container(
-          margin: EdgeInsets.all(25.0),
+          margin: EdgeInsets.all(25.0), // add a margin of 25.0 to the container
           child: TextField(
             decoration: InputDecoration(
                 border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(10.0),
-                    borderSide: BorderSide(color: Colors.purple, width: 2.0))),
+                    borderSide: BorderSide(color: Colors.purple, width: 2.0))), // decorate the text field with a purple outline
             onChanged: (value) {
               setState(() {
-                _text = value;
+                _text = value; // update the input text
               });
             },
           ),
         ),
         Container(
-          margin: EdgeInsets.all(25.0),
+          margin: EdgeInsets.all(25.0), // add a margin of 25.0 to the container
           child: ElevatedButton(
-            onPressed: _reverseText,
+            onPressed: _reverseText, // call the reverseText function when the button is pressed
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.orange[400],
               textStyle: TextStyle(color: Colors.black, fontSize: 20),
@@ -80,11 +84,11 @@ class _ReverseTextState extends State<ReverseText> {
         Text(_reversedText,
             style: TextStyle(color: Colors.blue[700], fontSize: 50)),
         Container(
-            height: 400,
-            width: 300,
+            height: 240,
+            width: 240,
             margin: EdgeInsets.all(30.0),
             child: PhotoView(
-              imageProvider: AssetImage("assets/images/me.JPG"),
+            imageProvider: AssetImage("assets/images/me.JPG"),
             )),
       ],
     );
